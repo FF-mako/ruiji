@@ -8,7 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/employee")
@@ -68,5 +70,15 @@ public class EmployeeController {
 
         Page pageInfo = employeeService.pageEmp(page,pageSize,name);
         return R.success(pageInfo);
+    }
+
+    //禁用员工状态
+    @PutMapping
+    public R update (HttpSession session,@RequestBody Employee employee){
+        Long id = (Long) session.getAttribute("employee");
+        employee.setUpdateUser(id);
+        employee.setUpdateTime(LocalDateTime.now());
+        employeeService.updateById(employee);
+        return R.success(null);
     }
 }
