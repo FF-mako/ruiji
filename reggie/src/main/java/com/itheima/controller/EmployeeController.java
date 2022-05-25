@@ -72,7 +72,7 @@ public class EmployeeController {
         return R.success(pageInfo);
     }
 
-    //禁用员工状态
+    //改变员工状态&&修改员工信息
     @PutMapping
     public R update (HttpSession session,@RequestBody Employee employee){
         Long id = (Long) session.getAttribute("employee");
@@ -80,5 +80,15 @@ public class EmployeeController {
         employee.setUpdateTime(LocalDateTime.now());
         employeeService.updateById(employee);
         return R.success(null);
+    }
+
+    //修改员工数据回显
+    @GetMapping("/{id}")
+    public R getById(@PathVariable Long id){
+        Employee emp = employeeService.getById(id);
+        if (emp != null){
+            return R.success(emp);
+        }
+        return R.error("没有查询到对应员工信息");
     }
 }
