@@ -1,4 +1,4 @@
-package com.itheima.service.impl;
+package com.itheima.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;

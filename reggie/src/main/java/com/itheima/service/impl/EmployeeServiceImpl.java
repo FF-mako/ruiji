@@ -1,4 +1,4 @@
-package com.itheima.service.impl.impl;
+package com.itheima.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.itheima.common.R;
 import com.itheima.dao.EmployeeDao;
 import com.itheima.domain.Employee;
-import com.itheima.service.impl.EmployeeService;
+import com.itheima.service.EmployeeService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
