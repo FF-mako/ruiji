@@ -51,6 +51,10 @@ public class Dish implements Serializable {
     //顺序
     private Integer sort;
 
+    // 分类名称
+    @TableField(exist = false) // 表示该属性在对应的表中不存在
+    private String categoryName;
+
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
