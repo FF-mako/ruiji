@@ -11,4 +11,6 @@ public interface CategoryService extends IService<Category> {
     List<Category> findCategoryByType(Integer type);
 
     Page pageEmp(int page, int pageSize);
+
+    void remove(Long id);
 }

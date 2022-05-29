@@ -44,7 +44,10 @@ public class CategoryController {
     //删除菜品套餐分类
     @DeleteMapping
     public R delete(Long id){
-        categoryService.removeById(id);
+        //若删除菜品套餐分类则需判断是否关联dish和Setmeal，故注之
+        //categoryService.removeById(id);
+
+        categoryService.remove(id);
         return R.success("分类信息删除成功");
     }
 
