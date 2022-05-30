@@ -8,6 +8,8 @@ import com.itheima.service.DishService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/dish")
 public class DishController {
@@ -28,4 +30,33 @@ public class DishController {
         dishService.saveDishAndFlavors(dishDto);
         return R.success(null);
     }
+
+    //菜品修改回显
+    @GetMapping("/{id}")
+    public R get(@PathVariable Long id){
+        DishDto dishDto = dishService.getByIdWithFlavor(id);
+        return R.success(dishDto);
+    }
+
+    //修改菜品
+    @PutMapping
+    public R update(@RequestBody DishDto dishDto){
+        dishService.updateWithFlavor(dishDto);
+        return R.success("修改菜品成功");
+    }
+
+    //修改菜品状态
+    @PostMapping("/status/{id}")
+    public R updatestatus(@PathVariable int id, @RequestParam List<Long> ids){
+        dishService.upupdatestatus(id,ids);
+        return R.success("修改成功");
+    }
+
+    //删除菜品
+    @DeleteMapping()
+    public R delete(@RequestParam List<Long> ids){
+        dishService.removeByIds(ids);
+        return R.success("删除成功");
+    }
+
 }

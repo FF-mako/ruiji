@@ -14,10 +14,12 @@ import com.itheima.service.CategoryService;
 import com.itheima.service.DishFlavorService;
 import com.itheima.service.DishService;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class DishServiceImpl extends ServiceImpl<DishDao, Dish> implements DishService {
@@ -63,5 +65,58 @@ public class DishServiceImpl extends ServiceImpl<DishDao, Dish> implements DishS
 
         return p;
 
+    }
+
+    @Override
+    public DishDto getByIdWithFlavor(Long id) {
+        //查询菜品基本信息，从dish表查询
+        Dish dish = getById(id);
+
+        DishDto dishDto = new DishDto();
+        BeanUtils.copyProperties(dish,dishDto);
+
+        LambdaQueryWrapper<DishFlavor> qw = new LambdaQueryWrapper<>();
+        qw.eq(DishFlavor::getDishId,id);
+        List<DishFlavor> flavors = dishFlavorService.list(qw);
+        dishDto.setFlavors(flavors);
+        return dishDto;
+    }
+
+    @Override
+    public void updateWithFlavor(DishDto dishDto) {
+        //更新dish表基本信息
+        updateById(dishDto);
+
+        //而页面再操作时，关于菜品的口味，有修改，有新增，也有可能删除
+        //其实，无论菜品口味信息如何变化，我们只需要保持一个原则： 先删除，后添加
+        LambdaQueryWrapper<DishFlavor> qw = new LambdaQueryWrapper<>();
+        qw.eq(DishFlavor::getDishId,dishDto.getId());
+        dishFlavorService.remove(qw);
+
+        //添加
+        List<DishFlavor> flavors = dishDto.getFlavors();
+        for (DishFlavor flavor : flavors) {
+            // 1. 给口味实体设置菜品ID
+            flavor.setDishId(dishDto.getId());
+        }
+        // 2. 存储口味实体 (调用flavorService的批量添加)
+        dishFlavorService.saveBatch(flavors);// insert into xx values (),(),()
+
+    //下面和上面差不多
+    /*    flavors = flavors.stream().map((item) -> {
+            item.setDishId(dishDto.getId());
+            return item;
+        }).collect(Collectors.toList());
+
+        dishFlavorService.saveBatch(flavors);*/
+    }
+
+    @Override
+    public void upupdatestatus(int id, List<Long> ids) {
+        List<Dish> dishes = listByIds(ids);
+        for (Dish dish : dishes) {
+            dish.setStatus(id);
+            updateById(dish);
+        }
     }
 }
