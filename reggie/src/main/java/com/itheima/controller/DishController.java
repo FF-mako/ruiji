@@ -53,10 +53,19 @@ public class DishController {
     }
 
     //删除菜品
+    //未完待续
     @DeleteMapping()
     public R delete(@RequestParam List<Long> ids){
         dishService.removeByIds(ids);
         return R.success("删除成功");
+    }
+
+    //查询菜品
+    @GetMapping("/list")
+    public R findDishById(Long categoryId){
+        List<Dish> dishList = dishService.findDishById(categoryId);
+        return R.success(dishList);
+
     }
 
 }

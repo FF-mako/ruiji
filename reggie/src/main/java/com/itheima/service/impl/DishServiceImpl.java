@@ -119,4 +119,13 @@ public class DishServiceImpl extends ServiceImpl<DishDao, Dish> implements DishS
             updateById(dish);
         }
     }
+
+    @Override
+    public List<Dish> findDishById(Long categoryId) {
+        LambdaQueryWrapper<Dish> qw = new LambdaQueryWrapper<>();
+        qw.eq(Dish::getCategoryId,categoryId);
+        qw.eq(Dish::getStatus,1);
+        List<Dish> dishList = dishDao.selectList(qw);
+        return dishList;
+    }
 }
