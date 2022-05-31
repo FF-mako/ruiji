@@ -9,6 +9,7 @@ import com.itheima.domain.Category;
 import com.itheima.domain.Setmeal;
 import com.itheima.domain.SetmealDish;
 import com.itheima.domain.SetmealDto;
+import com.itheima.exception.CustomException;
 import com.itheima.service.CategoryService;
 import com.itheima.service.SetmealDishService;
 import com.itheima.service.SetmealService;
@@ -61,5 +62,36 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealDao,Setmeal> implemen
             setmeal.setCategoryName(category.getName());
         }
         return p;
+    }
+
+    @Override
+    public void removeWithDish(List<Long> ids) {
+        LambdaQueryWrapper<Setmeal> qw1 = new LambdaQueryWrapper<>();
+        qw1.eq(Setmeal::getId,ids);
+        //若状态为起售中则不能删除
+        qw1.eq(Setmeal::getStatus,1);
+
+        int count = count(qw1);
+        if (count > 0){
+            //如果不能删除，抛出一个业务异常
+            throw new CustomException("套餐正在售卖中，不能删除");
+        }
+
+        //如果可以删除，先删除套餐表中的数据---setmeal
+        removeByIds(ids);
+
+        LambdaQueryWrapper<SetmealDish> qw2 = new LambdaQueryWrapper<>();
+        qw2.eq(SetmealDish::getSetmealId,ids);
+        setmealDishService.remove(qw2);
+
+    }
+
+    @Override
+    public void updatestatus(int stu,List<Long> ids) {
+        List<Setmeal> setmeals = listByIds(ids);
+        for (Setmeal setmeal : setmeals) {
+            setmeal.setStatus(stu);
+            updateById(setmeal);
+        }
     }
 }

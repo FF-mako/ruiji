@@ -8,7 +8,10 @@ import org.springframework.web.bind.annotation.*;
 public class ProjectExceptionHandler extends Exception{
 
     @ExceptionHandler(CategoryException.class)
-    public R handerException(Exception e){
+    public R handerException1(Exception e){
         return R.error(e.getMessage());
     }
+
+    @ExceptionHandler(CustomException.class)
+    public R handerException2(Exception e){return R.error(e.getMessage());}
 }
